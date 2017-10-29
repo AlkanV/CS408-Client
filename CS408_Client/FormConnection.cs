@@ -38,10 +38,14 @@ namespace CS408_Client
             // 3 - Send the text
             stream.Write(connectionData, 0, connectionData.Length);
 
-            // 4 - Read back data
-            byte[] responseBuffer = new byte[client.ReceiveBufferSize];
-            int bytesRead = stream.Read(responseBuffer, 0, client.ReceiveBufferSize);
-            Console.WriteLine("Read: ", Encoding.ASCII.GetString(responseBuffer, 0, bytesRead));
+            FormMain fm = new FormMain();
+            fm.Show();
+            this.Hide();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            System.Windows.Forms.Application.Exit();
         }
     }
 }

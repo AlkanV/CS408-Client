@@ -16,5 +16,10 @@ namespace CS408_Client
         {
             InitializeComponent();
         }
+
+        private void btnGetUsers_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
