@@ -33,17 +33,21 @@ namespace CS408_Client
                 MessageBox.Show("Username should be at least 8 characters long. And should not contain \"~ $\"", "Invalid Username", MessageBoxButtons.OK);
             }
 
-            // 2 - Create the connection
-            TcpClient client = new TcpClient(IPinput, PortInput);
-            NetworkStream stream = client.GetStream();
-            byte[] connectionData = ASCIIEncoding.ASCII.GetBytes("u|" + usernameInput);
+            else
+            {
+                // 2 - Create the connection
+                TcpClient client = new TcpClient(IPinput, PortInput);
+                NetworkStream stream = client.GetStream();
+                byte[] connectionData = ASCIIEncoding.ASCII.GetBytes("u|" + usernameInput);
 
-            // 3 - Send the text
-            stream.Write(connectionData, 0, connectionData.Length);
+                // 3 - Send the text
+                stream.Write(connectionData, 0, connectionData.Length);
 
-            FormMain fm = new FormMain();
-            fm.Show();
-            this.Hide();
+                FormMain fm = new FormMain();
+                fm.Show();
+                this.Hide();
+            }
+
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
