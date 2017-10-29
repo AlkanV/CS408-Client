@@ -18,17 +18,20 @@ namespace CS408_Client
             InitializeComponent();
         }
 
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnConnect_Click(object sender, EventArgs e)
         {
+
+
             // 1 - Input parameters
-            string IPinput = textBox2.Text;
-            int PortInput = Convert.ToInt32(textBox1.Text);
-            string usernameInput = textBox3.Text;
+            string IPinput = txtIpAddress.Text;
+            int PortInput = Convert.ToInt32(txtPort.Text);
+            string usernameInput = txtUserName.Text;
+
+            // kChecks the entered username in the username textbox
+            if (txtUserName.Text.Length < 8 || txtUserName.Text.IndexOf('~') >= 0 || txtUserName.Text.IndexOf('$') >= 0) 
+            {
+                MessageBox.Show("Username should be at least 8 characters long. And should not contain \"~ $\"", "Invalid Username", MessageBoxButtons.OK);
+            }
 
             // 2 - Create the connection
             TcpClient client = new TcpClient(IPinput, PortInput);
