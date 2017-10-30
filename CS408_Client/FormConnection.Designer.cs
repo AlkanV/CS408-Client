@@ -41,10 +41,9 @@
             // txtPort
             // 
             this.txtPort.Location = new System.Drawing.Point(112, 57);
-            this.txtPort.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.txtPort.Multiline = true;
+            this.txtPort.Margin = new System.Windows.Forms.Padding(2);
             this.txtPort.Name = "txtPort";
-            this.txtPort.Size = new System.Drawing.Size(181, 23);
+            this.txtPort.Size = new System.Drawing.Size(181, 20);
             this.txtPort.TabIndex = 0;
             // 
             // lblIpAddress
@@ -72,10 +71,9 @@
             // txtIpAddress
             // 
             this.txtIpAddress.Location = new System.Drawing.Point(112, 16);
-            this.txtIpAddress.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.txtIpAddress.Multiline = true;
+            this.txtIpAddress.Margin = new System.Windows.Forms.Padding(2);
             this.txtIpAddress.Name = "txtIpAddress";
-            this.txtIpAddress.Size = new System.Drawing.Size(181, 23);
+            this.txtIpAddress.Size = new System.Drawing.Size(181, 20);
             this.txtIpAddress.TabIndex = 3;
             this.txtIpAddress.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtIpAddress_KeyDown);
             // 
@@ -83,7 +81,7 @@
             // 
             this.btnConnect.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnConnect.Location = new System.Drawing.Point(142, 132);
-            this.btnConnect.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnConnect.Margin = new System.Windows.Forms.Padding(2);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(74, 28);
             this.btnConnect.TabIndex = 4;
@@ -96,7 +94,7 @@
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCancel.Location = new System.Drawing.Point(228, 132);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(2);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(62, 28);
             this.btnCancel.TabIndex = 5;
@@ -118,11 +116,11 @@
             // txtUserName
             // 
             this.txtUserName.Location = new System.Drawing.Point(112, 95);
-            this.txtUserName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.txtUserName.Multiline = true;
+            this.txtUserName.Margin = new System.Windows.Forms.Padding(2);
             this.txtUserName.Name = "txtUserName";
-            this.txtUserName.Size = new System.Drawing.Size(181, 23);
+            this.txtUserName.Size = new System.Drawing.Size(181, 20);
             this.txtUserName.TabIndex = 7;
+            this.txtUserName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtUserName_KeyDown);
             // 
             // FormConnection
             // 
@@ -139,7 +137,7 @@
             this.Controls.Add(this.lblIpAddress);
             this.Controls.Add(this.txtPort);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FormConnection";
             this.Text = "Connection";
             this.ResumeLayout(false);

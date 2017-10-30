@@ -33,6 +33,7 @@ namespace CS408_Client
         {
             byte[] requestByte = ASCIIEncoding.ASCII.GetBytes("g|");
             stream.Write(requestByte, 0, requestByte.Length);
+            listUsers.Items.Clear();
         }
 
         private void btnDisconnect_Click(object sender, EventArgs e)
@@ -48,8 +49,8 @@ namespace CS408_Client
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-            string Message = txtMessage.Text;
-            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("m|" + Message);
+            string message = txtMessage.Text;
+            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("m|" + message);
             stream.Write(messageByte, 0, messageByte.Length);
         }
 
@@ -74,6 +75,36 @@ namespace CS408_Client
                         txtInformation.AppendText("\n" + message);
                     });
                 }
+                else if (message_flag == "g")
+                {
+                    listUsers.Invoke((MethodInvoker)delegate
+                    {
+
+                        listUsers.Items.Add(message);
+                    });
+                }
+                else if (message_flag == "m")
+                {
+                    txtInformation.Invoke((MethodInvoker)delegate
+                    {
+                        txtInformation.AppendText("\n" + message);
+                    });
+                    txtMessage.Invoke((MethodInvoker)delegate
+                    {
+                        txtMessage.Clear();
+                    });
+                }
+            }
+        }
+
+        private void txtMessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnSend.PerformClick();
+                // these last two lines will stop the beep sound
+                e.SuppressKeyPress = true;
+                e.Handled = true;
             }
         }
     }
