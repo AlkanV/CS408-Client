@@ -43,34 +43,41 @@ namespace CS408_Client
                 string usernameInput = txtUserName.Text;
 
                 // 2 - Create the connection
-                client = new TcpClient(IPinput, (int)PortInput);
-                NetworkStream stream = client.GetStream();
-                byte[] connectionData = ASCIIEncoding.ASCII.GetBytes("u|" + usernameInput);
-
-                // 3 - Send the text
-                stream.Write(connectionData, 0, connectionData.Length);
-
-                // 4 - Listen for response
-                byte[] response = new byte[2048];
-                int numBytesRead = stream.Read(response, 0, response.Length);
-                string message_flag = "";
-                string response_str = Encoding.Default.GetString(response);
-                response_str = response_str.Substring(0, response_str.IndexOf('\0'));
-                message_flag = response_str.Substring(0, response_str.IndexOf('|'));
-                
-                if (message_flag == "e")
+                try
                 {
-                    MessageBox.Show("Username already taken", "Invalid Username", MessageBoxButtons.OK);
-                    client.Close();
-                    txtIpAddress.Clear();
-                    txtPort.Clear();
-                    txtUserName.Clear();
+                    client = new TcpClient(IPinput, (int)PortInput);
+                    NetworkStream stream = client.GetStream();
+                    byte[] connectionData = ASCIIEncoding.ASCII.GetBytes("u|" + usernameInput);
+
+                    // 3 - Send the text
+                    stream.Write(connectionData, 0, connectionData.Length);
+
+                    // 4 - Listen for response
+                    byte[] response = new byte[2048];
+                    int numBytesRead = stream.Read(response, 0, response.Length);
+                    string message_flag = "";
+                    string response_str = Encoding.Default.GetString(response);
+                    response_str = response_str.Substring(0, response_str.IndexOf('\0'));
+                    message_flag = response_str.Substring(0, response_str.IndexOf('|'));
+
+                    if (message_flag == "e")
+                    {
+                        MessageBox.Show("Username already taken", "Invalid Username", MessageBoxButtons.OK);
+                        client.Close();
+                        txtIpAddress.Clear();
+                        txtPort.Clear();
+                        txtUserName.Clear();
+                    }
+                    else
+                    {
+                        FormMain fm = new FormMain();
+                        fm.Show();
+                        this.Hide();
+                    }
                 }
-                else
+                catch (SocketException exc)
                 {
-                    FormMain fm = new FormMain();
-                    fm.Show();
-                    this.Hide();
+                    MessageBox.Show("Cannot connect to specified server", "Invalid IP/Port", MessageBoxButtons.OK);
                 }
             }
 
