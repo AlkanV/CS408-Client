@@ -17,11 +17,19 @@ namespace CS408_Client
         TcpClient client;
         NetworkStream stream;
         Thread thrListen;
+
+        public Form RefToFormConnection { get; set; }
+
         public FormMain()
         {
             InitializeComponent();
             client = FormConnection.client;
             stream = client.GetStream();
+
+            if (!this.IsHandleCreated)
+            {
+                this.CreateHandle();
+            }
 
             // Create a thread to listen for incoming messages
             thrListen = new Thread(new ThreadStart(Listen));
@@ -31,9 +39,20 @@ namespace CS408_Client
 
         private void btnGetUsers_Click(object sender, EventArgs e)
         {
-            byte[] requestByte = ASCIIEncoding.ASCII.GetBytes("g|");
-            stream.Write(requestByte, 0, requestByte.Length);
-            listUsers.Items.Clear();
+            try
+            {
+                byte[] requestByte = ASCIIEncoding.ASCII.GetBytes("g|");
+                stream.Write(requestByte, 0, requestByte.Length);
+                listUsers.Items.Clear();
+            }
+            catch
+            {
+                thrListen.Abort();
+                client.Close(); // disconnect from server
+                this.RefToFormConnection.Show();
+                MessageBox.Show(this, "Server not available", "Rekt", MessageBoxButtons.OK);
+                this.Close();
+            }
         }
 
         private void btnDisconnect_Click(object sender, EventArgs e)
@@ -41,58 +60,79 @@ namespace CS408_Client
             txtInformation.AppendText("\nTerminating connections");
             thrListen.Abort();
             client.Close(); // disconnect from server
-            this.Hide();
-            var formConnection = new FormConnection();
-            formConnection.Closed += (s, args) => this.Close();
-            formConnection.Show();
+            this.RefToFormConnection.Show();
+            this.Close();
         }
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-            string message = txtMessage.Text;
-            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("m|" + message);
-            stream.Write(messageByte, 0, messageByte.Length);
+            try
+            {
+                string message = txtMessage.Text;
+                byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("m|" + message);
+                stream.Write(messageByte, 0, messageByte.Length);
+            }
+            catch
+            {
+                thrListen.Abort();
+                client.Close(); // disconnect from server
+                this.RefToFormConnection.Show();
+                MessageBox.Show(this, "Server not available", "Rekt", MessageBoxButtons.OK);
+                this.Close();
+            }
+            
         }
 
         private void Listen()
         {
             while (true)
             {
-                byte[] buffer = new byte[2048];
-                string message_flag = "", message = "";
-                if (stream.DataAvailable)
+                try
                 {
-                    stream.Read(buffer, 0, buffer.Length);
-                    string[] message_content = Encoding.Default.GetString(buffer).Split('|');
-                    message_flag = message_content[0];
-                    message = message_content[1];
-                    Array.Clear(buffer, 0, buffer.Length);
-                }
-                if (message_flag == "i")
-                {
-                    txtInformation.Invoke((MethodInvoker)delegate
+                    byte[] buffer = new byte[2048];
+                    string message_flag = "", message = "";
+                    if (stream.DataAvailable)
                     {
-                        txtInformation.AppendText("\n" + message);
-                    });
-                }
-                else if (message_flag == "g")
-                {
-                    listUsers.Invoke((MethodInvoker)delegate
+                        stream.Read(buffer, 0, buffer.Length);
+                        string[] message_content = Encoding.Default.GetString(buffer).Split('|');
+                        message_flag = message_content[0];
+                        message = message_content[1];
+                        Array.Clear(buffer, 0, buffer.Length);
+                    }
+                    if (message_flag == "i")
                     {
+                        txtInformation.Invoke((MethodInvoker)delegate
+                        {
+                            txtInformation.AppendText("\n" + message);
+                        });
+                    }
+                    else if (message_flag == "g")
+                    {
+                        listUsers.Invoke((MethodInvoker)delegate
+                        {
 
-                        listUsers.Items.Add(message);
-                    });
+                            listUsers.Items.Add(message);
+                        });
+                    }
+                    else if (message_flag == "m")
+                    {
+                        txtInformation.Invoke((MethodInvoker)delegate
+                        {
+                            txtInformation.AppendText("\n" + message);
+                        });
+                        txtMessage.Invoke((MethodInvoker)delegate
+                        {
+                            txtMessage.Clear();
+                        });
+                    }
                 }
-                else if (message_flag == "m")
+                catch
                 {
-                    txtInformation.Invoke((MethodInvoker)delegate
-                    {
-                        txtInformation.AppendText("\n" + message);
-                    });
-                    txtMessage.Invoke((MethodInvoker)delegate
-                    {
-                        txtMessage.Clear();
-                    });
+                    thrListen.Abort();
+                    client.Close(); // disconnect from server
+                    this.RefToFormConnection.Show();
+                    MessageBox.Show(this, "Server not available", "Closing", MessageBoxButtons.OK);
+                    this.Close();
                 }
             }
         }
@@ -107,5 +147,26 @@ namespace CS408_Client
                 e.Handled = true;
             }
         }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (e.CloseReason == CloseReason.WindowsShutDown) return;
+
+            // Confirm user wants to close
+            switch (MessageBox.Show(this, "Are you sure you want to close?", "Closing", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.No:
+                    e.Cancel = true;
+                    break;
+                default:
+                    thrListen.Abort();
+                    client.Close(); // disconnect from server
+                    this.RefToFormConnection.Show();
+                    break;
+            }
+        }
+
     }
 }

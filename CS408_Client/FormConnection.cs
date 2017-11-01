@@ -71,8 +71,10 @@ namespace CS408_Client
                     else
                     {
                         FormMain fm = new FormMain();
+                        fm.RefToFormConnection = this;
+                        this.Visible = false;
                         fm.Show();
-                        this.Hide();
+
                     }
                 }
                 catch (SocketException exc)
