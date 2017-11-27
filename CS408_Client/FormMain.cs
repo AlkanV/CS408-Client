@@ -168,5 +168,9 @@ namespace CS408_Client
             }
         }
 
+        private void btnInvite_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

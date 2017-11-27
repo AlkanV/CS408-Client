@@ -37,6 +37,7 @@
             this.lblMessage = new System.Windows.Forms.Label();
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
+            this.btnInvite = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listUsers
@@ -138,11 +139,23 @@
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
+            // btnInvite
+            // 
+            this.btnInvite.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnInvite.Location = new System.Drawing.Point(157, 291);
+            this.btnInvite.Name = "btnInvite";
+            this.btnInvite.Size = new System.Drawing.Size(75, 31);
+            this.btnInvite.TabIndex = 10;
+            this.btnInvite.Text = "Invite";
+            this.btnInvite.UseVisualStyleBackColor = true;
+            this.btnInvite.Click += new System.EventHandler(this.btnInvite_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(487, 330);
+            this.Controls.Add(this.btnInvite);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.txtMessage);
             this.Controls.Add(this.lblMessage);
@@ -172,6 +185,7 @@
         private System.Windows.Forms.Label lblMessage;
         private System.Windows.Forms.TextBox txtMessage;
         private System.Windows.Forms.Button btnSend;
+        private System.Windows.Forms.Button btnInvite;
     }
 }
 
