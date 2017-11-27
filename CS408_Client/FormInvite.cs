@@ -12,21 +12,32 @@ namespace CS408_Client
 {
     public partial class FormInvite : Form
     {
-        public FormInvite()
+        string userName;
+        public bool accepted { get; set; }
+        public Form RefToFormConnection { get; set; }
+        public FormInvite(string username)
         {
             InitializeComponent();
-
-
+            userName = username;
         }
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
-
+            accepted = true;
+            DialogResult = DialogResult.OK;
+            this.Close();
         }
 
         private void btnDecline_Click(object sender, EventArgs e)
         {
+            accepted = false;
+            DialogResult = DialogResult.OK;
+            this.Close();
+        }
 
+        private void lblInvitation_Click(object sender, EventArgs e)
+        {
+            lblInvitation.Text = userName + "has sent you an invite! It seems that you are not that much alone!";
         }
     }
 }

@@ -110,7 +110,6 @@ namespace CS408_Client
                     {
                         listUsers.Invoke((MethodInvoker)delegate
                         {
-
                             listUsers.Items.Add(message);
                         });
                     }
@@ -124,6 +123,22 @@ namespace CS408_Client
                         {
                             txtMessage.Clear();
                         });
+                    }
+                    else if (message_flag == "i")
+                    {
+                        txtInformation.Invoke((MethodInvoker)delegate
+                        {
+                            txtInformation.AppendText("\n" + message + " an invitation has geldi kapiya dayandi artik mubarek.");
+                        });
+
+                        using (var form = new FormInvite(message))
+                        {
+                            var result = form.ShowDialog();
+                            if (result == DialogResult.OK)
+                            {
+                                bool acceptValue= form.accepted;
+                            }
+                        }
                     }
                 }
                 catch
@@ -170,7 +185,20 @@ namespace CS408_Client
 
         private void btnInvite_Click(object sender, EventArgs e)
         {
-
+            try
+            {
+                string invitePerson = listUsers.SelectedItem.ToString();
+                byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("v|" + invitePerson);
+                stream.Write(messageByte, 0, messageByte.Length);
+            }
+            catch
+            {
+                thrListen.Abort();
+                client.Close(); // disconnect from server
+                this.RefToFormConnection.Show();
+                MessageBox.Show(this, "Server not available", "Rekt", MessageBoxButtons.OK);
+                this.Close();
+            }
         }
     }
 }
