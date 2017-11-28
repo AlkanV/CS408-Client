@@ -98,6 +98,7 @@ namespace CS408_Client
                         string[] message_content = Encoding.Default.GetString(buffer).Split('|');
                         message_flag = message_content[0];
                         message = message_content[1];
+                        message = message.Substring(0, message.IndexOf('\0'));
                         Array.Clear(buffer, 0, buffer.Length);
                     }
                     if (message_flag == "i")
@@ -141,7 +142,7 @@ namespace CS408_Client
                                 try
                                 {
                                     byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("r|" + acceptValue);
-                                    stream.Write(messageByte, 0, messageByte.Length);
+                                    stream.Write(messageByte, 0, messageByte.Length); // PATLIYOR
                                 }
                                 catch
                                 {
