@@ -267,6 +267,7 @@ namespace CS408_Client
                                             }
                                         }
                                     }
+                                }
                             }
                         });
                     }
