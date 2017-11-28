@@ -85,6 +85,7 @@ namespace CS408_Client
 
         private void Listen()
         {
+            int acceptValue, surrenderValue = 0;
             while (true)
             {
                 try
@@ -136,7 +137,44 @@ namespace CS408_Client
                             var result = form.ShowDialog();
                             if (result == DialogResult.OK)
                             {
-                                bool acceptValue= form.accepted;
+                                acceptValue = form.accepted;
+                                try
+                                {
+                                    byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("r|" + acceptValue);
+                                    stream.Write(messageByte, 0, messageByte.Length);
+                                }
+                                catch
+                                {
+                                    thrListen.Abort();
+                                    client.Close(); // disconnect from server
+                                    this.RefToFormConnection.Show();
+                                    MessageBox.Show(this, "Server not available", "Rekt", MessageBoxButtons.OK);
+                                    this.Close();
+                                }
+                                if (acceptValue == 1)
+                                {
+                                    using (var game = new FormGame())
+                                    {
+                                        var gameResult = game.ShowDialog();
+                                        if (gameResult == DialogResult.OK)
+                                        {
+                                            surrenderValue = game.surrendered;
+                                            try
+                                            {
+                                                byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue);
+                                                stream.Write(messageByte, 0, messageByte.Length);
+                                            }
+                                            catch
+                                            {
+                                                thrListen.Abort();
+                                                client.Close(); // disconnect from server
+                                                this.RefToFormConnection.Show();
+                                                MessageBox.Show(this, "Server not available", "Rekt", MessageBoxButtons.OK);
+                                                this.Close();
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

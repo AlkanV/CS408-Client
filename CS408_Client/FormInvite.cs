@@ -13,7 +13,7 @@ namespace CS408_Client
     public partial class FormInvite : Form
     {
         string userName;
-        public bool accepted { get; set; }
+        public int accepted { get; set; }
         public Form RefToFormConnection { get; set; }
         public FormInvite(string username)
         {
@@ -23,14 +23,14 @@ namespace CS408_Client
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            accepted = true;
+            accepted = 1;
             DialogResult = DialogResult.OK;
             this.Close();
         }
 
         private void btnDecline_Click(object sender, EventArgs e)
         {
-            accepted = false;
+            accepted = 0;
             DialogResult = DialogResult.OK;
             this.Close();
         }
