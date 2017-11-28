@@ -80,12 +80,12 @@ namespace CS408_Client
                 MessageBox.Show(this, "Server not available", "Rekt", MessageBoxButtons.OK);
                 this.Close();
             }
-            
+
         }
 
         private void Listen()
         {
-            int acceptValue, surrenderValue = 0;
+            int acceptValue = 0, surrenderValue = 0;
             while (true)
             {
                 try
@@ -125,7 +125,7 @@ namespace CS408_Client
                             txtMessage.Clear();
                         });
                     }
-                    else if (message_flag == "i")
+                    else if (message_flag == "v")
                     {
                         txtInformation.Invoke((MethodInvoker)delegate
                         {
@@ -151,17 +151,109 @@ namespace CS408_Client
                                     MessageBox.Show(this, "Server not available", "Rekt", MessageBoxButtons.OK);
                                     this.Close();
                                 }
-                                if (acceptValue == 1)
+                            }
+                        }
+                        if (acceptValue == 1)
+                        {
+                            using (var game = new FormGame())
+                            {
+                                try
                                 {
-                                    using (var game = new FormGame())
+                                    byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 1);
+                                    stream.Write(messageByte, 0, messageByte.Length);
+                                }
+                                catch
+                                {
+                                    thrListen.Abort();
+                                    client.Close(); // disconnect from server
+                                    this.RefToFormConnection.Show();
+                                    MessageBox.Show(this, "Server not available", "Rekt", MessageBoxButtons.OK);
+                                    this.Close();
+                                }
+                                var gameResult = game.ShowDialog();
+                                if (gameResult == DialogResult.OK)
+                                {
+                                    surrenderValue = game.surrendered;
+                                    try
                                     {
-                                        var gameResult = game.ShowDialog();
-                                        if (gameResult == DialogResult.OK)
+                                        byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue);
+                                        stream.Write(messageByte, 0, messageByte.Length);
+                                    }
+                                    catch
+                                    {
+                                        thrListen.Abort();
+                                        client.Close(); // disconnect from server
+                                        this.RefToFormConnection.Show();
+                                        MessageBox.Show(this, "Server not available", "Rekt", MessageBoxButtons.OK);
+                                        this.Close();
+                                    }
+                                    if (surrenderValue == 1)
+                                    {
+                                        MessageBox.Show(this, "You lost!", "Rekt", MessageBoxButtons.OK);
+                                        try
                                         {
-                                            surrenderValue = game.surrendered;
+                                            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
+                                            stream.Write(messageByte, 0, messageByte.Length);
+                                        }
+                                        catch
+                                        {
+                                            thrListen.Abort();
+                                            client.Close(); // disconnect from server
+                                            this.RefToFormConnection.Show();
+                                            MessageBox.Show(this, "Server not available", "Rekt", MessageBoxButtons.OK);
+                                            this.Close();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (message_flag == "r")
+                    {
+                        txtInformation.Invoke((MethodInvoker)delegate
+                        {
+                            if (message == "0")
+                                txtInformation.AppendText("\nIntivation Declined. Now you can send or receive a new invitation");
+                            if (message == "1")
+                            {
+                                using (var game = new FormGame())
+                                {
+                                    try
+                                    {
+                                        byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 1);
+                                        stream.Write(messageByte, 0, messageByte.Length);
+                                    }
+                                    catch
+                                    {
+                                        thrListen.Abort();
+                                        client.Close(); // disconnect from server
+                                        this.RefToFormConnection.Show();
+                                        MessageBox.Show(this, "Server not available", "Rekt", MessageBoxButtons.OK);
+                                        this.Close();
+                                    }
+                                    var gameResult = game.ShowDialog();
+                                    if (gameResult == DialogResult.OK)
+                                    {
+                                        surrenderValue = game.surrendered;
+                                        try
+                                        {
+                                            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue);
+                                            stream.Write(messageByte, 0, messageByte.Length);
+                                        }
+                                        catch
+                                        {
+                                            thrListen.Abort();
+                                            client.Close(); // disconnect from server
+                                            this.RefToFormConnection.Show();
+                                            MessageBox.Show(this, "Server not available", "Rekt", MessageBoxButtons.OK);
+                                            this.Close();
+                                        }
+                                        if (surrenderValue == 1)
+                                        {
+                                            MessageBox.Show(this, "You lost!", "Rekt", MessageBoxButtons.OK);
                                             try
                                             {
-                                                byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue);
+                                                byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
                                                 stream.Write(messageByte, 0, messageByte.Length);
                                             }
                                             catch
@@ -174,9 +266,8 @@ namespace CS408_Client
                                             }
                                         }
                                     }
-                                }
                             }
-                        }
+                        });
                     }
                 }
                 catch
