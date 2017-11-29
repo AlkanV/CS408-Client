@@ -198,7 +198,7 @@ namespace CS408_Client
                                     }
                                     if (surrenderValue == 1)
                                     {
-                                        MessageBox.Show(this, "You lost!", "Rekt", MessageBoxButtons.OK);
+                                        //MessageBox.Show(this, "You lost!", "Rekt", MessageBoxButtons.OK);
                                         try
                                         {
                                             byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
@@ -259,7 +259,7 @@ namespace CS408_Client
                                         }
                                         if (surrenderValue == 1)
                                         {
-                                            MessageBox.Show(this, "You lost!", "Rekt", MessageBoxButtons.OK);
+                                            //MessageBox.Show(this, "You lost!", "Rekt", MessageBoxButtons.OK);
                                             try
                                             {
                                                 byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
