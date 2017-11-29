@@ -14,6 +14,7 @@ namespace CS408_Client
     public partial class FormConnection : Form
     {
         public static TcpClient client;
+        public static string username_me;
         public FormConnection()
         {
             InitializeComponent();
@@ -70,6 +71,7 @@ namespace CS408_Client
                     }
                     else
                     {
+                        username_me = usernameInput;
                         FormMain fm = new FormMain();
                         fm.RefToFormConnection = this;
                         this.Visible = false;

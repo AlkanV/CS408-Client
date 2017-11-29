@@ -320,8 +320,15 @@ namespace CS408_Client
             try
             {
                 string invitePerson = listUsers.SelectedItem.ToString();
-                byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("v|" + invitePerson);
-                stream.Write(messageByte, 0, messageByte.Length);
+                if (invitePerson != FormConnection.username_me)
+                {
+                    byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("v|" + invitePerson);
+                    stream.Write(messageByte, 0, messageByte.Length);
+                }
+                else
+                {
+                    MessageBox.Show(this, "You can not invite yourself", "Forever alone", MessageBoxButtons.OK);
+                }
             }
             catch
             {
