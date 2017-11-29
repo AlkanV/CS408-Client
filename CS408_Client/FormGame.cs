@@ -64,7 +64,6 @@ namespace CS408_Client
                         thrListen.Abort();
                         DialogResult = DialogResult.OK;
                         this.Close();
-
                     }
                 }
                 catch

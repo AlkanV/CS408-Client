@@ -178,7 +178,7 @@ namespace CS408_Client
                                     surrenderValue = game.surrendered;
                                     try
                                     {
-                                        byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue);
+                                        byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue + "|" + message);
                                         stream.Write(messageByte, 0, messageByte.Length);
                                     }
                                     catch
@@ -239,7 +239,7 @@ namespace CS408_Client
                                         surrenderValue = game.surrendered;
                                         try
                                         {
-                                            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue);
+                                            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue + "|" + message);
                                             stream.Write(messageByte, 0, messageByte.Length);
                                         }
                                         catch
@@ -305,7 +305,10 @@ namespace CS408_Client
             switch (MessageBox.Show(this, "Are you sure you want to close?", "Closing", MessageBoxButtons.YesNo))
             {
                 case DialogResult.No:
-                    e.Cancel = true;
+                    MessageBox.Show(this, "Bastin bi kere artik carpiya...", "cok gec", MessageBoxButtons.OK);
+                    thrListen.Abort();
+                    client.Close(); // disconnect from server
+                    this.RefToFormConnection.Show();
                     break;
                 default:
                     thrListen.Abort();
