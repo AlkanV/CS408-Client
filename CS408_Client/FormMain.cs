@@ -17,6 +17,7 @@ namespace CS408_Client
         TcpClient client;
         NetworkStream stream;
         Thread thrListen;
+        string storedName;
 
         public Form RefToFormConnection { get; set; }
 
@@ -108,6 +109,10 @@ namespace CS408_Client
                         message_flag = message_content[0];
                         message = message_content[1];
                         message = message.Substring(0, message.IndexOf('\0'));
+                        if(message_flag == "v")
+                        {
+                            storedName = message;
+                        }
                         DisplayInfo("READ: " + message_content[0] + "|" + message_content[1]);
                         Array.Clear(buffer, 0, buffer.Length);
                     }
@@ -142,7 +147,7 @@ namespace CS408_Client
                                 acceptValue = form.accepted;
                                 try
                                 {
-                                    byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("r|" + acceptValue + "|" + message);
+                                    byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("r|" + acceptValue + "|" + storedName);
                                     stream.Write(messageByte, 0, messageByte.Length); 
                                 }
                                 catch
@@ -178,7 +183,7 @@ namespace CS408_Client
                                     surrenderValue = game.surrendered;
                                     try
                                     {
-                                        byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue + "|" + message);
+                                        byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue + "|" + storedName);
                                         stream.Write(messageByte, 0, messageByte.Length);
                                     }
                                     catch
@@ -239,7 +244,7 @@ namespace CS408_Client
                                         surrenderValue = game.surrendered;
                                         try
                                         {
-                                            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue + "|" + message);
+                                            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue + "|" + storedName);
                                             stream.Write(messageByte, 0, messageByte.Length);
                                         }
                                         catch
