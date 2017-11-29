@@ -132,7 +132,7 @@ namespace CS408_Client
                     }
                     else if (message_flag == "v")
                     {
-                        DisplayInfo(message + " an invitation has geldi kapiya dayandi artik mubarek.");
+                        DisplayInfo("An invitation has geldi kapiya dayandi artik mubarek from" + message);
 
                         using (var form = new FormInvite(message))
                         {
@@ -142,8 +142,8 @@ namespace CS408_Client
                                 acceptValue = form.accepted;
                                 try
                                 {
-                                    byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("r|" + acceptValue);
-                                    stream.Write(messageByte, 0, messageByte.Length); // PATLIYOR
+                                    byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("r|" + acceptValue + "|" + message);
+                                    stream.Write(messageByte, 0, messageByte.Length); 
                                 }
                                 catch
                                 {
