@@ -35,10 +35,9 @@
             // 
             // btnAccept
             // 
-            this.btnAccept.Location = new System.Drawing.Point(118, 137);
-            this.btnAccept.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.btnAccept.Location = new System.Drawing.Point(59, 71);
             this.btnAccept.Name = "btnAccept";
-            this.btnAccept.Size = new System.Drawing.Size(150, 44);
+            this.btnAccept.Size = new System.Drawing.Size(75, 23);
             this.btnAccept.TabIndex = 0;
             this.btnAccept.Text = "Accept";
             this.btnAccept.UseVisualStyleBackColor = true;
@@ -46,10 +45,9 @@
             // 
             // btnDecline
             // 
-            this.btnDecline.Location = new System.Drawing.Point(348, 137);
-            this.btnDecline.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.btnDecline.Location = new System.Drawing.Point(174, 71);
             this.btnDecline.Name = "btnDecline";
-            this.btnDecline.Size = new System.Drawing.Size(150, 44);
+            this.btnDecline.Size = new System.Drawing.Size(75, 23);
             this.btnDecline.TabIndex = 1;
             this.btnDecline.Text = "Decline";
             this.btnDecline.UseVisualStyleBackColor = true;
@@ -58,24 +56,21 @@
             // lblInvitation
             // 
             this.lblInvitation.AutoSize = true;
-            this.lblInvitation.Location = new System.Drawing.Point(276, 48);
-            this.lblInvitation.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblInvitation.Location = new System.Drawing.Point(46, 28);
             this.lblInvitation.Name = "lblInvitation";
-            this.lblInvitation.Size = new System.Drawing.Size(70, 25);
+            this.lblInvitation.Size = new System.Drawing.Size(35, 13);
             this.lblInvitation.TabIndex = 2;
             this.lblInvitation.Text = "label1";
-            this.lblInvitation.Click += new System.EventHandler(this.lblInvitation_Click);
             // 
             // FormInvite
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(644, 225);
+            this.ClientSize = new System.Drawing.Size(322, 117);
             this.Controls.Add(this.lblInvitation);
             this.Controls.Add(this.btnDecline);
             this.Controls.Add(this.btnAccept);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "FormInvite";
             this.Text = "Invitation";
             this.ResumeLayout(false);

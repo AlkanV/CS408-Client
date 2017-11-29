@@ -43,6 +43,7 @@ namespace CS408_Client
             {
                 byte[] requestByte = ASCIIEncoding.ASCII.GetBytes("g|");
                 stream.Write(requestByte, 0, requestByte.Length);
+                DisplayInfo("sending g| flag");
                 listUsers.Items.Clear();
             }
             catch
@@ -83,6 +84,14 @@ namespace CS408_Client
 
         }
 
+        private void DisplayInfo(string message)
+        {
+            txtInformation.Invoke((MethodInvoker)delegate
+            {
+                txtInformation.AppendText(message + "\n");
+            });
+        }
+
         private void Listen()
         {
             int acceptValue = 0, surrenderValue = 0;
@@ -99,14 +108,12 @@ namespace CS408_Client
                         message_flag = message_content[0];
                         message = message_content[1];
                         message = message.Substring(0, message.IndexOf('\0'));
+                        DisplayInfo("READ: " + message_content[0] + "|" + message_content[1]);
                         Array.Clear(buffer, 0, buffer.Length);
                     }
                     if (message_flag == "i")
                     {
-                        txtInformation.Invoke((MethodInvoker)delegate
-                        {
-                            txtInformation.AppendText("\n" + message);
-                        });
+                        DisplayInfo(message);
                     }
                     else if (message_flag == "g")
                     {
@@ -117,10 +124,7 @@ namespace CS408_Client
                     }
                     else if (message_flag == "m")
                     {
-                        txtInformation.Invoke((MethodInvoker)delegate
-                        {
-                            txtInformation.AppendText("\n" + message);
-                        });
+                        DisplayInfo(message);
                         txtMessage.Invoke((MethodInvoker)delegate
                         {
                             txtMessage.Clear();
@@ -128,10 +132,7 @@ namespace CS408_Client
                     }
                     else if (message_flag == "v")
                     {
-                        txtInformation.Invoke((MethodInvoker)delegate
-                        {
-                            txtInformation.AppendText("\n" + message + " an invitation has geldi kapiya dayandi artik mubarek.");
-                        });
+                        DisplayInfo(message + " an invitation has geldi kapiya dayandi artik mubarek.");
 
                         using (var form = new FormInvite(message))
                         {

@@ -19,6 +19,7 @@ namespace CS408_Client
         {
             InitializeComponent();
             userName = username;
+            lblInvitation.Text = userName + "has sent you an invite! It seems that you are not that much alone!";
         }
 
         private void btnAccept_Click(object sender, EventArgs e)
@@ -35,9 +36,6 @@ namespace CS408_Client
             this.Close();
         }
 
-        private void lblInvitation_Click(object sender, EventArgs e)
-        {
-            lblInvitation.Text = userName + "has sent you an invite! It seems that you are not that much alone!";
-        }
+
     }
 }
