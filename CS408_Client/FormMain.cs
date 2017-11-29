@@ -17,7 +17,7 @@ namespace CS408_Client
         TcpClient client;
         NetworkStream stream;
         Thread thrListen;
-        string storedName;
+        string storedName = "";
 
         public Form RefToFormConnection { get; set; }
 
@@ -112,6 +112,7 @@ namespace CS408_Client
                         if(message_flag == "v")
                         {
                             storedName = message;
+                            DisplayInfo("in game with " + storedName);
                         }
                         DisplayInfo("READ: " + message_content[0] + "|" + message_content[1]);
                         Array.Clear(buffer, 0, buffer.Length);
@@ -184,6 +185,7 @@ namespace CS408_Client
                                     try
                                     {
                                         byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue + "|" + storedName);
+                                        Thread.Sleep(20);
                                         stream.Write(messageByte, 0, messageByte.Length);
                                     }
                                     catch

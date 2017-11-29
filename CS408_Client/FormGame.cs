@@ -55,15 +55,17 @@ namespace CS408_Client
                         message_flag = message_content[0];
                         message = message_content[1];
                         message = message.Substring(0, message.IndexOf('\0'));
-                        Array.Clear(buffer, 0, buffer.Length);
-                    }
-                    if (message_flag == "s" && message == "1")
-                    {
+                        
+                        if (message_flag == "s" && message == "1")
+                        {
 
-                        MessageBox.Show(this, "You Won!", "Wow...", MessageBoxButtons.OK);
-                        thrListen.Abort();
-                        DialogResult = DialogResult.OK;
-                        this.Close();
+                            MessageBox.Show(this, "You Won!", "Wow...", MessageBoxButtons.OK);
+                            thrListen.Abort();
+                            DialogResult = DialogResult.OK;
+                            this.Close();
+                        }
+
+                        Array.Clear(buffer, 0, buffer.Length);
                     }
                 }
                 catch
