@@ -165,7 +165,6 @@ namespace CS408_Client
                         }
                         if (acceptValue == 1)
                         {
-                            this.Hide();
                             using (var game = new FormGame())
                             {
                                 try
@@ -185,7 +184,6 @@ namespace CS408_Client
                                 if (gameResult == DialogResult.OK)
                                 {
                                     game.Close();
-                                    this.Show();
                                     surrenderValue = game.surrendered;
                                     try
                                     {
@@ -203,7 +201,6 @@ namespace CS408_Client
                                     }
                                     if (surrenderValue == 1)
                                     {
-                                        this.Show();
                                         MessageBox.Show(this, "You lost!", "Rekt", MessageBoxButtons.OK);
                                         try
                                         {
@@ -231,7 +228,6 @@ namespace CS408_Client
                                 txtInformation.AppendText("\nIntivation Declined. Now you can send or receive a new invitation");
                             if (message == "1")
                             {
-                                this.Hide();
                                 using (var game = new FormGame())
                                 {
                                     try
@@ -250,7 +246,6 @@ namespace CS408_Client
                                     var gameResult = game.ShowDialog();
                                     if (gameResult == DialogResult.OK)
                                     {
-                                        this.Show();
                                         game.Close();
                                         surrenderValue = game.surrendered;
                                         try
@@ -268,7 +263,6 @@ namespace CS408_Client
                                         }
                                         if (surrenderValue == 1)
                                         {
-                                            this.Show();
                                             MessageBox.Show(this, "You lost!", "Rekt", MessageBoxButtons.OK);
                                             try
                                             {

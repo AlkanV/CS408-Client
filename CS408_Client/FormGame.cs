@@ -60,8 +60,8 @@ namespace CS408_Client
                         
                         if (message_flag == "s" && message == "1")
                         {
-                            MessageBox.Show(this, "You Won!", "Wow...", MessageBoxButtons.OK);
-                            thrListen.Abort();
+                           // MessageBox.Show(this, "You Won!", "Wow...", MessageBoxButtons.OK);
+                           // thrListen.Abort();
                             DialogResult = DialogResult.OK;
                             this.Close();
                         }
@@ -71,7 +71,7 @@ namespace CS408_Client
                 }
                 catch
                 {
-                    thrListen.Abort();
+                   // thrListen.Abort();
                     MessageBox.Show(this, "Server got disconnected during the game", "Rekt", MessageBoxButtons.OK);
                     this.Close();
                 }
