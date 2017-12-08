@@ -31,6 +31,8 @@ namespace CS408_Client
             thrListen = new Thread(new ThreadStart(Listen));
             thrListen.IsBackground = true;
             thrListen.Start();
+
+            this.Text = "client [" + FormConnection.username_me + "]";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -58,7 +60,6 @@ namespace CS408_Client
                         
                         if (message_flag == "s" && message == "1")
                         {
-
                             MessageBox.Show(this, "You Won!", "Wow...", MessageBoxButtons.OK);
                             thrListen.Abort();
                             DialogResult = DialogResult.OK;

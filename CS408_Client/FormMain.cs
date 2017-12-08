@@ -36,6 +36,8 @@ namespace CS408_Client
             thrListen = new Thread(new ThreadStart(Listen));
             thrListen.IsBackground = true;
             thrListen.Start();
+
+            this.Text = "client [" + FormConnection.username_me + "]";
         }
 
         private void btnGetUsers_Click(object sender, EventArgs e)
@@ -163,6 +165,7 @@ namespace CS408_Client
                         }
                         if (acceptValue == 1)
                         {
+                            this.Hide();
                             using (var game = new FormGame())
                             {
                                 try
@@ -181,6 +184,8 @@ namespace CS408_Client
                                 var gameResult = game.ShowDialog();
                                 if (gameResult == DialogResult.OK)
                                 {
+                                    game.Close();
+                                    this.Show();
                                     surrenderValue = game.surrendered;
                                     try
                                     {
@@ -198,7 +203,8 @@ namespace CS408_Client
                                     }
                                     if (surrenderValue == 1)
                                     {
-                                        //MessageBox.Show(this, "You lost!", "Rekt", MessageBoxButtons.OK);
+                                        this.Show();
+                                        MessageBox.Show(this, "You lost!", "Rekt", MessageBoxButtons.OK);
                                         try
                                         {
                                             byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
@@ -225,6 +231,7 @@ namespace CS408_Client
                                 txtInformation.AppendText("\nIntivation Declined. Now you can send or receive a new invitation");
                             if (message == "1")
                             {
+                                this.Hide();
                                 using (var game = new FormGame())
                                 {
                                     try
@@ -243,6 +250,8 @@ namespace CS408_Client
                                     var gameResult = game.ShowDialog();
                                     if (gameResult == DialogResult.OK)
                                     {
+                                        this.Show();
+                                        game.Close();
                                         surrenderValue = game.surrendered;
                                         try
                                         {
@@ -259,7 +268,8 @@ namespace CS408_Client
                                         }
                                         if (surrenderValue == 1)
                                         {
-                                            //MessageBox.Show(this, "You lost!", "Rekt", MessageBoxButtons.OK);
+                                            this.Show();
+                                            MessageBox.Show(this, "You lost!", "Rekt", MessageBoxButtons.OK);
                                             try
                                             {
                                                 byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
