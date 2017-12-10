@@ -18,6 +18,7 @@ namespace CS408_Client
         NetworkStream stream;
         Thread thrListen;
         string storedName = "";
+        DateTime inviteSentAt; // stores the timestamp of the most recent sent invite
 
         public Form RefToFormConnection { get; set; }
 
@@ -225,17 +226,35 @@ namespace CS408_Client
 
                     else if (message_flag == "r")
                     {
-                        txtInformation.Invoke((MethodInvoker)delegate
+                        if (message == "0")
                         {
-                            if (message == "0")
-                                txtInformation.AppendText("\nIntivation Declined. Now you can send or receive a new invitation");
-                            if (message == "1")
+                            DisplayInfo("Intivation Declined. Now you can send or receive a new invitation");
+                        }
+                        else if (message == "1")
+                        {
+                            FormGame game = new FormGame();
+                            var gameResult = game.ShowDialog();
+                            try
                             {
-                                FormGame game = new FormGame();
-                                var gameResult = game.ShowDialog();
+                                byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 1); // indicate start of gameplay to server
+                                Thread.Sleep(20);
+                                stream.Write(messageByte, 0, messageByte.Length);
+                            }
+                            catch
+                            {
+                                thrListen.Abort();
+                                client.Close(); // disconnect from server
+                                this.RefToFormConnection.Show();
+                                MessageBox.Show("Server not available - cannot send a|1", "Rekt", MessageBoxButtons.OK);
+                                this.Close();
+                            }
+                            if (gameResult == DialogResult.OK)
+                            {
+                                game.Close();
+                                surrenderValue = game.surrendered;
                                 try
                                 {
-                                    byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 1);
+                                    byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue + "|" + storedName);
                                     Thread.Sleep(20);
                                     stream.Write(messageByte, 0, messageByte.Length);
                                 }
@@ -244,16 +263,15 @@ namespace CS408_Client
                                     thrListen.Abort();
                                     client.Close(); // disconnect from server
                                     this.RefToFormConnection.Show();
-                                    MessageBox.Show("Server not available", "Rekt", MessageBoxButtons.OK);
+                                    MessageBox.Show("Server not available - cannot send s|" + surrenderValue + "|" + storedName, "Rekt", MessageBoxButtons.OK);
                                     this.Close();
                                 }
-                                if (gameResult == DialogResult.OK)
+                                if (surrenderValue == 1)
                                 {
-                                    game.Close();
-                                    surrenderValue = game.surrendered;
+                                    MessageBox.Show("You lost!", "Rekt", MessageBoxButtons.OK);
                                     try
                                     {
-                                        byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue + "|" + storedName);
+                                        byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
                                         Thread.Sleep(20);
                                         stream.Write(messageByte, 0, messageByte.Length);
                                     }
@@ -262,30 +280,12 @@ namespace CS408_Client
                                         thrListen.Abort();
                                         client.Close(); // disconnect from server
                                         this.RefToFormConnection.Show();
-                                        MessageBox.Show("Server not available", "Rekt", MessageBoxButtons.OK);
+                                        MessageBox.Show("Server not available - cannot send a|0", "Rekt", MessageBoxButtons.OK);
                                         this.Close();
-                                    }
-                                    if (surrenderValue == 1)
-                                    {
-                                        MessageBox.Show("You lost!", "Rekt", MessageBoxButtons.OK);
-                                        try
-                                        {
-                                            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
-                                            Thread.Sleep(20);
-                                            stream.Write(messageByte, 0, messageByte.Length);
-                                        }
-                                        catch
-                                        {
-                                            thrListen.Abort();
-                                            client.Close(); // disconnect from server
-                                            this.RefToFormConnection.Show();
-                                            MessageBox.Show("Server not available", "Rekt", MessageBoxButtons.OK);
-                                            this.Close();
-                                        }
                                     }
                                 }
                             }
-                        });
+                        }
                     }
                 }
                 catch
@@ -337,17 +337,28 @@ namespace CS408_Client
         {
             try
             {
-                string invitePerson = listUsers.SelectedItem.ToString();
-                if (invitePerson != FormConnection.username_me)
+                const int timeoutSeconds = 15;
+                if ((DateTime.Now - inviteSentAt).TotalSeconds < timeoutSeconds)
                 {
-                    byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("v|" + invitePerson);
-                    Thread.Sleep(20);
-                    stream.Write(messageByte, 0, messageByte.Length);
+                    DisplayInfo("You have to wait for " + (timeoutSeconds - (DateTime.Now - inviteSentAt).TotalSeconds)
+                        + " send an invite again");
                 }
                 else
                 {
-                    MessageBox.Show(this, "You can not invite yourself", "Forever alone", MessageBoxButtons.OK);
+                    string invitePerson = listUsers.SelectedItem.ToString();
+                    if (invitePerson != FormConnection.username_me)
+                    {
+                        byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("v|" + invitePerson);
+                        Thread.Sleep(20);
+                        stream.Write(messageByte, 0, messageByte.Length);
+                        inviteSentAt = DateTime.Now;
+                    }
+                    else
+                    {
+                        MessageBox.Show(this, "You can not invite yourself", "Forever alone", MessageBoxButtons.OK);
+                    }
                 }
+
             }
             catch
             {
