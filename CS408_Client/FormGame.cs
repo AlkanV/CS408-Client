@@ -17,6 +17,7 @@ namespace CS408_Client
         TcpClient client;
         NetworkStream stream;
         Thread thrListen1;
+        private bool gameTerminating;
 
         public int surrendered { get; set; }
         public Form RefToFormConnection { get; set; }
@@ -30,6 +31,7 @@ namespace CS408_Client
 
             thrListen1 = new Thread(new ThreadStart(Listen));
             thrListen1.IsBackground = true;
+            gameTerminating = false;
             thrListen1.Start();
 
             this.Text = "client [" + FormConnection.username_me + "]";
@@ -42,7 +44,7 @@ namespace CS408_Client
         }
         private void Listen()
         {
-            while (true)
+            while (!gameTerminating)
             {
                 try
                 {
@@ -61,8 +63,15 @@ namespace CS408_Client
                             MessageBox.Show("You Won!", "Wow...", MessageBoxButtons.OK);
                             byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
                             Thread.Sleep(20);
-                            stream.Write(messageByte, 0, messageByte.Length);
-                            this.Close();
+                            if (stream.CanWrite)
+                            {
+                                stream.Write(messageByte, 0, messageByte.Length);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Cannot write to the stream!", "FormGame Error", MessageBoxButtons.OK);
+                            }
+                            gameTerminating = true;
                         }
 
                         Array.Clear(buffer, 0, buffer.Length);
@@ -70,21 +79,22 @@ namespace CS408_Client
                 }
                 catch
                 {
-                    thrListen1.Abort();
-                    MessageBox.Show(this, "Server got disconnected during the game", "Rekt", MessageBoxButtons.OK);
+                    MessageBox.Show("Server got disconnected during the game", "Rekt", MessageBoxButtons.OK);
                     this.Close();
+                    Thread.ResetAbort();
                 }
             }
+            this.Invoke((MethodInvoker)delegate
+            {
+                // close the form on the forms thread
+                this.Close();
+            });
         }
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
-            thrListen1.Abort();
-            DialogResult = DialogResult.OK;
-
-            
-
+            DialogResult = DialogResult.OK; // indicate that the game form was terminated
         }
 
     }
