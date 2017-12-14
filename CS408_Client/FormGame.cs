@@ -16,7 +16,8 @@ namespace CS408_Client
     {
         TcpClient client;
         NetworkStream stream;
-        Thread thrListen;
+        Thread thrListen1;
+        private bool gameTerminating;
 
         public int surrendered { get; set; }
         public Form RefToFormConnection { get; set; }
@@ -28,21 +29,22 @@ namespace CS408_Client
 
             surrendered = 0;
 
-            thrListen = new Thread(new ThreadStart(Listen));
-            thrListen.IsBackground = true;
-            thrListen.Start();
+            thrListen1 = new Thread(new ThreadStart(Listen));
+            thrListen1.IsBackground = true;
+            gameTerminating = false;
+            thrListen1.Start();
+
+            this.Text = "client [" + FormConnection.username_me + "]";
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            thrListen.Abort();
             surrendered = 1;
-            DialogResult = DialogResult.OK;
             this.Close();
         }
         private void Listen()
         {
-            while (true)
+            while (!gameTerminating)
             {
                 try
                 {
@@ -55,14 +57,21 @@ namespace CS408_Client
                         message_flag = message_content[0];
                         message = message_content[1];
                         message = message.Substring(0, message.IndexOf('\0'));
-                        
+
                         if (message_flag == "s" && message == "1")
                         {
-
-                            MessageBox.Show(this, "You Won!", "Wow...", MessageBoxButtons.OK);
-                            thrListen.Abort();
-                            DialogResult = DialogResult.OK;
-                            this.Close();
+                            MessageBox.Show("You Won!", "Wow...", MessageBoxButtons.OK);
+                            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
+                            Thread.Sleep(20);
+                            if (stream.CanWrite)
+                            {
+                                stream.Write(messageByte, 0, messageByte.Length);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Cannot write to the stream!", "FormGame Error", MessageBoxButtons.OK);
+                            }
+                            gameTerminating = true;
                         }
 
                         Array.Clear(buffer, 0, buffer.Length);
@@ -70,28 +79,22 @@ namespace CS408_Client
                 }
                 catch
                 {
-                    thrListen.Abort();
-                    MessageBox.Show(this, "Server got disconnected during the game", "Rekt", MessageBoxButtons.OK);
+                    MessageBox.Show("Server got disconnected during the game", "Rekt", MessageBoxButtons.OK);
                     this.Close();
+                    Thread.ResetAbort();
                 }
             }
+            this.Invoke((MethodInvoker)delegate
+            {
+                // close the form on the forms thread
+                this.Close();
+            });
         }
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
-
-            // Confirm user wants to close
-            switch (MessageBox.Show(this, "You will lose the game, are you sure you want to exit?", "Closing", MessageBoxButtons.YesNo))
-            {
-                case DialogResult.No:
-                    e.Cancel = true;
-                    break;
-                default:
-                    thrListen.Abort();
-                    break;
-            }
+            DialogResult = DialogResult.OK; // indicate that the game form was terminated
         }
 
     }
