@@ -19,7 +19,7 @@ namespace CS408_Client
         TcpClient client;
         NetworkStream stream;
         Thread thrListen1;
-        private bool gameTerminating;
+        private bool gameTerminating, inRound = true;
         string inGameWith;
 
         public Form RefToFormConnection { get; set; }
@@ -115,6 +115,7 @@ namespace CS408_Client
                             {
                                 MessageBox.Show("You Won the round!", "Wow...", MessageBoxButtons.OK);
                                 score++;
+                                lblScore.Text = "Score: " + score;
                             }
                             else if (message == "1")
                             {
@@ -124,7 +125,7 @@ namespace CS408_Client
                             {
                                 MessageBox.Show("Tie", "Wow...", MessageBoxButtons.OK);
                             }
-
+                            inRound = true;
                         }
                         else if (message_flag == "w") //w diye yeni bi flag yarat, w0 = oyun sonlanmadi, w1 = oyun sonlandi
                         {
@@ -173,21 +174,23 @@ namespace CS408_Client
                 MessageBox.Show("Please enter an integer between 1 and 100", "Are you dumb?");
                 return;
             }
-           
 
-            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("e|" + guessedNumber);
-            Thread.Sleep(20);
-            if (stream.CanWrite)
+            if (inRound)
             {
-                stream.Write(messageByte, 0, messageByte.Length);
+                byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("e|" + guessedNumber);
+                Thread.Sleep(20);
+                if (stream.CanWrite)
+                {
+                    stream.Write(messageByte, 0, messageByte.Length);
+                }
+                else
+                {
+                    MessageBox.Show("Cannot write to the stream!", "FormGame Error", MessageBoxButtons.OK);
+                    DialogResult = DialogResult.Cancel;
+                    this.Close();
+                }
             }
-            else
-            {
-                MessageBox.Show("Cannot write to the stream!", "FormGame Error", MessageBoxButtons.OK);
-                DialogResult = DialogResult.Cancel;
-                this.Close();
-            }
-            txtGuessedNumber.ReadOnly = true;
+            inRound = false;
         }
     }
 }

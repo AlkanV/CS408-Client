@@ -82,9 +82,9 @@
             this.lblScore.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblScore.Location = new System.Drawing.Point(13, 78);
             this.lblScore.Name = "lblScore";
-            this.lblScore.Size = new System.Drawing.Size(83, 29);
+            this.lblScore.Size = new System.Drawing.Size(102, 29);
             this.lblScore.TabIndex = 4;
-            this.lblScore.Text = "Score:";
+            this.lblScore.Text = "Score: 0";
             // 
             // FormGame
             // 
