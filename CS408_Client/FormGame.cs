@@ -15,6 +15,7 @@ namespace CS408_Client
     public delegate void CloseDelegate();
     public partial class FormGame : Form
     {
+        int score;
         TcpClient client;
         NetworkStream stream;
         Thread thrListen1;
@@ -24,6 +25,7 @@ namespace CS408_Client
         public Form RefToFormConnection { get; set; }
         public FormGame(string opponentUsername)
         {
+            score = 0;
             InitializeComponent();
             client = FormConnection.client;
             stream = client.GetStream();
@@ -103,17 +105,39 @@ namespace CS408_Client
                             // two parties have sent their guesses - game ended
                             if (message == "0")
                             {
-                                MessageBox.Show("You Won!", "Wow...", MessageBoxButtons.OK);
+                                MessageBox.Show("You Won the round!", "Wow...", MessageBoxButtons.OK);
+                                score++;
                             }
                             else if (message == "1")
                             {
-                                MessageBox.Show("You Lost", ":(", MessageBoxButtons.OK);
+                                MessageBox.Show("You Lost the round", ":(", MessageBoxButtons.OK);
                             }
                             else
                             {
                                 MessageBox.Show("Tie", "Wow...", MessageBoxButtons.OK);
                             }
-                            gameTerminating = true;
+
+                        }
+                        else if (message_flag == "w") //w diye yeni bi flag yarat, w0 = oyun sonlanmadi, w1 = oyun sonlandi
+                        {
+                            if (message[0] == '1' && score != 2)
+                            {
+                                MessageBox.Show("You Lost the game", ":(", MessageBoxButtons.OK);
+                                DialogResult = DialogResult.OK;
+                                this.Close();
+                            }
+                            if (message[0] == '1' && score == 2)
+                            {
+                                MessageBox.Show("You Won the game!", "Wow...", MessageBoxButtons.OK);
+                                DialogResult = DialogResult.OK;
+                                this.Close();
+                            }
+                        }
+                        else if (message_flag == "j") //j for disconnected opponent
+                        {
+                            MessageBox.Show("You Won the game!", "Wow...", MessageBoxButtons.OK);
+                            DialogResult = DialogResult.OK;
+                            this.Close();
                         }
 
                         Array.Clear(buffer, 0, buffer.Length);
@@ -132,7 +156,6 @@ namespace CS408_Client
         {
             base.OnFormClosing(e);
             if (e.CloseReason == CloseReason.WindowsShutDown) return;
-            DialogResult = DialogResult.OK; // indicate that the game form was terminated
         }
 
         private void btnGuess_Click(object sender, EventArgs e)
@@ -141,7 +164,7 @@ namespace CS408_Client
             string guessedNumber_str = txtGuessedNumber.Text;
             if (!Int32.TryParse(guessedNumber_str, out guessedNumber))
             {
-                MessageBox.Show("Please enter an integer between 1 and 100");
+                MessageBox.Show("Please enter an integer between 1 and 100", "Are you dumb?");
                 return;
             }
            
@@ -155,6 +178,8 @@ namespace CS408_Client
             else
             {
                 MessageBox.Show("Cannot write to the stream!", "FormGame Error", MessageBoxButtons.OK);
+                DialogResult = DialogResult.Cancel;
+                this.Close();
             }
             txtGuessedNumber.ReadOnly = true;
         }

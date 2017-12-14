@@ -32,14 +32,15 @@
             this.lblGuessedNumber = new System.Windows.Forms.Label();
             this.btnGuess = new System.Windows.Forms.Button();
             this.txtGuessedNumber = new System.Windows.Forms.TextBox();
+            this.lblScore = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(136, 72);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.Location = new System.Drawing.Point(272, 138);
+            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(72, 31);
+            this.button1.Size = new System.Drawing.Size(144, 60);
             this.button1.TabIndex = 0;
             this.button1.Text = "Surrender!";
             this.button1.UseVisualStyleBackColor = true;
@@ -49,19 +50,19 @@
             // 
             this.lblGuessedNumber.AutoSize = true;
             this.lblGuessedNumber.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblGuessedNumber.Location = new System.Drawing.Point(6, 35);
-            this.lblGuessedNumber.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblGuessedNumber.Location = new System.Drawing.Point(13, 33);
+            this.lblGuessedNumber.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblGuessedNumber.Name = "lblGuessedNumber";
-            this.lblGuessedNumber.Size = new System.Drawing.Size(107, 15);
+            this.lblGuessedNumber.Size = new System.Drawing.Size(209, 29);
             this.lblGuessedNumber.TabIndex = 1;
             this.lblGuessedNumber.Text = "Guessed Number:";
             // 
             // btnGuess
             // 
-            this.btnGuess.Location = new System.Drawing.Point(6, 72);
-            this.btnGuess.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnGuess.Location = new System.Drawing.Point(12, 138);
+            this.btnGuess.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnGuess.Name = "btnGuess";
-            this.btnGuess.Size = new System.Drawing.Size(70, 31);
+            this.btnGuess.Size = new System.Drawing.Size(140, 60);
             this.btnGuess.TabIndex = 2;
             this.btnGuess.Text = "Guess";
             this.btnGuess.UseVisualStyleBackColor = true;
@@ -69,23 +70,34 @@
             // 
             // txtGuessedNumber
             // 
-            this.txtGuessedNumber.Location = new System.Drawing.Point(136, 34);
-            this.txtGuessedNumber.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtGuessedNumber.Location = new System.Drawing.Point(272, 31);
+            this.txtGuessedNumber.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtGuessedNumber.Name = "txtGuessedNumber";
-            this.txtGuessedNumber.Size = new System.Drawing.Size(74, 20);
+            this.txtGuessedNumber.Size = new System.Drawing.Size(144, 31);
             this.txtGuessedNumber.TabIndex = 3;
+            // 
+            // lblScore
+            // 
+            this.lblScore.AutoSize = true;
+            this.lblScore.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblScore.Location = new System.Drawing.Point(13, 78);
+            this.lblScore.Name = "lblScore";
+            this.lblScore.Size = new System.Drawing.Size(83, 29);
+            this.lblScore.TabIndex = 4;
+            this.lblScore.Text = "Score:";
             // 
             // FormGame
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(217, 113);
+            this.ClientSize = new System.Drawing.Size(434, 217);
+            this.Controls.Add(this.lblScore);
             this.Controls.Add(this.txtGuessedNumber);
             this.Controls.Add(this.btnGuess);
             this.Controls.Add(this.lblGuessedNumber);
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "FormGame";
             this.Text = "The Game";
             this.ResumeLayout(false);
@@ -99,5 +111,6 @@
         private System.Windows.Forms.Label lblGuessedNumber;
         private System.Windows.Forms.Button btnGuess;
         private System.Windows.Forms.TextBox txtGuessedNumber;
+        private System.Windows.Forms.Label lblScore;
     }
 }
