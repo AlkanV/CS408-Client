@@ -102,7 +102,7 @@ namespace CS408_Client
 
         private void Listen()
         {
-            int acceptValue = 0, surrenderValue = 0;
+            int acceptValue = 0;
             while (true)
             {
                 try
@@ -180,8 +180,7 @@ namespace CS408_Client
                             if (acceptValue == 1)
                             {
                                 DisplayInfo("Invitation from " + inGameWith + "was accepted");
-                                FormGame game = new FormGame();
-                                var gameResult = game.ShowDialog();
+                                // 1 - indicate the start of game to the server
                                 try
                                 {
                                     byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 1);
@@ -203,47 +202,37 @@ namespace CS408_Client
                                     MessageBox.Show("Server not available", "Rekt", MessageBoxButtons.OK);
                                     this.Close();
                                 }
-                                if (gameResult == DialogResult.OK)
+
+                                // 2 - Open the game and block this thread until the game is finished
+                                FormGame game = new FormGame(inGameWith);
+                                var gameResult = game.ShowDialog();
+                                game.Close();
+
+                                // 3 - The dialog result will be "cancel" if a communication error was encountered
+                                if (gameResult == DialogResult.Cancel)
                                 {
-                                    game.Close();
-                                    surrenderValue = game.surrendered;
-                                    
-                                    if (surrenderValue == 1)
+                                    thrListen.Abort();
+                                    client.Close(); // disconnect from server
+                                    this.RefToFormConnection.Show();
+                                    MessageBox.Show("Server not available", "Rekt", MessageBoxButtons.OK);
+                                    this.Close();
+                                }
+                                else
+                                {
+                                    // indicate end of game to the server
+                                    try
                                     {
-                                        DisplayInfo("You lost a game to " + inGameWith);
-                                        try
-                                        {
-                                            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("s|" + surrenderValue + "|" + inGameWith);
-                                            Thread.Sleep(20);
-                                            stream.Write(messageByte, 0, messageByte.Length);
-                                        }
-                                        catch
-                                        {
-                                            thrListen.Abort();
-                                            client.Close(); // disconnect from server
-                                            this.RefToFormConnection.Show();
-                                            MessageBox.Show("Server not available", "Rekt", MessageBoxButtons.OK);
-                                            this.Close();
-                                        }
-                                        MessageBox.Show("You lost!", "Rekt", MessageBoxButtons.OK);
-                                        try
-                                        {
-                                            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
-                                            Thread.Sleep(20);
-                                            stream.Write(messageByte, 0, messageByte.Length);
-                                        }
-                                        catch
-                                        {
-                                            thrListen.Abort();
-                                            client.Close(); // disconnect from server
-                                            this.RefToFormConnection.Show();
-                                            MessageBox.Show("Server not available", "Rekt", MessageBoxButtons.OK);
-                                            this.Close();
-                                        }
+                                        byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
+                                        Thread.Sleep(20);
+                                        stream.Write(messageByte, 0, messageByte.Length);
                                     }
-                                    else
+                                    catch
                                     {
-                                        DisplayInfo("You won a game against " + inGameWith);
+                                        thrListen.Abort();
+                                        client.Close(); // disconnect from server
+                                        this.RefToFormConnection.Show();
+                                        MessageBox.Show("Server not available", "Rekt", MessageBoxButtons.OK);
+                                        this.Close();
                                     }
                                 }
                             }
@@ -257,6 +246,7 @@ namespace CS408_Client
                             }
                             else if (message == "1")
                             {
+                                // 1 - indicate server the initiation of game
                                 try
                                 {
                                     byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 1); // indicate start of gameplay to server
@@ -271,49 +261,38 @@ namespace CS408_Client
                                     MessageBox.Show("Server not available - cannot send a|1", "Rekt", MessageBoxButtons.OK);
                                     this.Close();
                                 }
-                                FormGame game = new FormGame();
-                                var gameResult = game.ShowDialog();
-                                if (gameResult == DialogResult.OK)
-                                {
-                                    game.Close();
-                                    surrenderValue = game.surrendered;
-                                    try
-                                    {
-                                        string sendingMessage = "s|" + surrenderValue + "|" + inGameWith;
-                                        byte[] messageByte = ASCIIEncoding.ASCII.GetBytes(sendingMessage);
-                                        Thread.Sleep(20);
-                                        if (stream.CanWrite)
-                                        {
-                                            stream.Write(messageByte, 0, messageByte.Length); // PATLIYOR
-                                        }
+                                
+                                // 2 - open the game form and block this thread until the game is finished
+                                FormGame game = new FormGame(inGameWith);
 
-                                    }
-                                    catch
-                                    {
-                                        thrListen.Abort();
-                                        client.Close(); // disconnect from server
-                                        this.RefToFormConnection.Show();
-                                        MessageBox.Show("Server not available - cannot send s|" + surrenderValue + "|" + inGameWith, "Rekt", MessageBoxButtons.OK);
-                                        this.Close();
-                                    }
-                                    if (surrenderValue == 1)
-                                    {
-                                        MessageBox.Show("You lost!", "Rekt", MessageBoxButtons.OK);
-                                        try
-                                        {
-                                            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
-                                            Thread.Sleep(20);
-                                            stream.Write(messageByte, 0, messageByte.Length);
-                                        }
-                                        catch
-                                        {
-                                            thrListen.Abort();
-                                            client.Close(); // disconnect from server
-                                            this.RefToFormConnection.Show();
-                                            MessageBox.Show("Server not available - cannot send a|0", "Rekt", MessageBoxButtons.OK);
-                                            this.Close();
-                                        }
-                                    }
+                                // 3 - if the form encountered an error, the dialog result will be
+                                // set to DialogResult.Cancel
+                                var gameResult = game.ShowDialog();
+                                game.Close();
+
+                                if (gameResult == DialogResult.Cancel)
+                                {
+                                    // a communication error occured in FormGame - terminate connection
+                                    thrListen.Abort();
+                                    client.Close(); // disconnect from server
+                                    this.RefToFormConnection.Show();
+                                    this.Close();
+                                }
+
+                                // 4 - indicate the end of game to the server
+                                try
+                                {
+                                    byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
+                                    Thread.Sleep(20);
+                                    stream.Write(messageByte, 0, messageByte.Length);
+                                }
+                                catch
+                                {
+                                    thrListen.Abort();
+                                    client.Close(); // disconnect from server
+                                    this.RefToFormConnection.Show();
+                                    MessageBox.Show("Server not available - cannot send a|0", "Rekt", MessageBoxButtons.OK);
+                                    this.Close();
                                 }
                             }
                         }
