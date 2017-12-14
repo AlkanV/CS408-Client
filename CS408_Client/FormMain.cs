@@ -217,23 +217,20 @@ namespace CS408_Client
                                     MessageBox.Show("Server not available", "Rekt", MessageBoxButtons.OK);
                                     this.Close();
                                 }
-                                else
+                                // indicate end of game to the server
+                                try
                                 {
-                                    // indicate end of game to the server
-                                    try
-                                    {
-                                        byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
-                                        Thread.Sleep(20);
-                                        stream.Write(messageByte, 0, messageByte.Length);
-                                    }
-                                    catch
-                                    {
-                                        thrListen.Abort();
-                                        client.Close(); // disconnect from server
-                                        this.RefToFormConnection.Show();
-                                        MessageBox.Show("Server not available", "Rekt", MessageBoxButtons.OK);
-                                        this.Close();
-                                    }
+                                    byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
+                                    Thread.Sleep(20);
+                                    stream.Write(messageByte, 0, messageByte.Length);
+                                }
+                                catch
+                                {
+                                    thrListen.Abort();
+                                    client.Close(); // disconnect from server
+                                    this.RefToFormConnection.Show();
+                                    MessageBox.Show("Server not available", "Rekt", MessageBoxButtons.OK);
+                                    this.Close();
                                 }
                             }
                         }
@@ -264,12 +261,11 @@ namespace CS408_Client
                                 
                                 // 2 - open the game form and block this thread until the game is finished
                                 FormGame game = new FormGame(inGameWith);
-
-                                // 3 - if the form encountered an error, the dialog result will be
-                                // set to DialogResult.Cancel
                                 var gameResult = game.ShowDialog();
                                 game.Close();
 
+                                // 3 - if the form encountered an error, the dialog result will be
+                                // set to DialogResult.Cancel
                                 if (gameResult == DialogResult.Cancel)
                                 {
                                     // a communication error occured in FormGame - terminate connection

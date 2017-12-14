@@ -31,15 +31,30 @@ namespace CS408_Client
             stream = client.GetStream();
             inGameWith = opponentUsername;
 
-            thrListen1 = new Thread(new ThreadStart(Listen));
-            thrListen1.IsBackground = true;
             gameTerminating = false;
-            thrListen1.Start();
-
-            txtGuessedNumber.ReadOnly = true; // wait for the server to send "x" flag
+            //txtGuessedNumber.ReadOnly = true; // wait for the server to send "x" flag
 
             this.Text = "client [" + FormConnection.username_me + "]";
+            thrListen1 = new Thread(new ThreadStart(Listen));
+            thrListen1.IsBackground = true;
+            thrListen1.Start();
         }
+
+        /*
+        private void eventLoop()
+        {
+
+            thrListen1 = new Thread(new ThreadStart(Listen));
+            thrListen1.IsBackground = true;
+            thrListen1.Start();
+            bool isalive = thrListen.IsAlive;
+            while (isalive)
+            {
+                isalive = thrListen.IsAlive;
+            }
+            this.Close();
+        }
+        */
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -63,6 +78,7 @@ namespace CS408_Client
         }
         private void Listen()
         {
+
             while (!gameTerminating)
             {
                 try
@@ -80,25 +96,17 @@ namespace CS408_Client
                         if (message_flag == "s" && message == "1")
                         {
                             MessageBox.Show("You Won!", "Wow...", MessageBoxButtons.OK);
-                            byte[] messageByte = ASCIIEncoding.ASCII.GetBytes("a|" + 0);
-                            Thread.Sleep(20);
-                            if (stream.CanWrite)
-                            {
-                                stream.Write(messageByte, 0, messageByte.Length);
-                            }
-                            else
-                            {
-                                MessageBox.Show("Cannot write to the stream!", "FormGame Error", MessageBoxButtons.OK);
-                            }
                             gameTerminating = true;
+                            DialogResult = DialogResult.OK;
                         }
                         else if (message_flag == "x")
                         {
                             // game can start
+                            /*
                             txtGuessedNumber.Invoke((MethodInvoker)delegate
                             {
                                 txtGuessedNumber.ReadOnly = false;
-                            });
+                            });*/
                         }
                         else if (message_flag == "f")
                         {
@@ -130,14 +138,14 @@ namespace CS408_Client
                             {
                                 MessageBox.Show("You Won the game!", "Wow...", MessageBoxButtons.OK);
                                 DialogResult = DialogResult.OK;
-                                this.Close();
+                                gameTerminating = true;
                             }
                         }
                         else if (message_flag == "j") //j for disconnected opponent
                         {
                             MessageBox.Show("You Won the game!", "Wow...", MessageBoxButtons.OK);
                             DialogResult = DialogResult.OK;
-                            this.Close();
+                            gameTerminating = true;
                         }
 
                         Array.Clear(buffer, 0, buffer.Length);
@@ -145,12 +153,10 @@ namespace CS408_Client
                 }
                 catch
                 {
-                    MessageBox.Show("Server got disconnected during the game", "Rekt", MessageBoxButtons.OK);
-
-                    this.Invoke(new CloseDelegate(this.Close));
+                    MessageBox.Show("Exception encountered in FormGame::Listen", "Rekt", MessageBoxButtons.OK);
+                    gameTerminating = true;
                 }
             }
-            this.Invoke(new CloseDelegate(this.Close));
         }
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
