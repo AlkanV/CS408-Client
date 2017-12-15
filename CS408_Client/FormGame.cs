@@ -154,7 +154,7 @@ namespace CS408_Client
                 }
                 catch
                 {
-                    MessageBox.Show("Exception encountered in FormGame::Listen", "Rekt", MessageBoxButtons.OK);
+                    //MessageBox.Show("Exception encountered in FormGame::Listen", "Rekt", MessageBoxButtons.OK);
                     gameTerminating = true;
                 }
             }
