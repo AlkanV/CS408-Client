@@ -1,1 +1,1 @@
-# CS408-Client Application
+# GameLobby.Client
